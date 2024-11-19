@@ -2,9 +2,9 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"library_app/model"
 	"library_app/utils"
-	"time"
 )
 
 type AuthService interface {
@@ -20,19 +20,21 @@ func (s *accountSevi) RegisterAccount(payload model.Account) (model.Account, err
 
 	hashPassword, err := utils.HashPassword(payload.Password)
 	if err != nil {
-		return model.Account{}, err
+		return model.Account{}, fmt.Errorf("failed to hash password: %w", err)
 	}
 
 	if payload.Role != "admin" && payload.Role != "user" && payload.Role != "employee" {
 		return model.Account{}, errors.New("Invalid Role")
 	}
 
-	payload = model.Account{
-		Password:  hashPassword,
-		CreatedAt: time.Now(),
+	payload.Password = hashPassword
+
+	account, err := s.CreateAccount(payload)
+	if err != nil {
+		return model.Account{}, fmt.Errorf("failed to create account: %w", err)
 	}
 
-	return payload, nil
+	return account, nil
 }
 
 func NewAuthService(accountService AccountService) AuthService {

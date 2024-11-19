@@ -34,5 +34,5 @@ func (c *AuthController) Create(ctx *gin.Context) {
 		return
 	}
 
-	common.SendCreateResponse(ctx, "Ok", newRes)
+	common.SendCreateResponse(ctx, "Succesfully Created Account", newRes)
 }

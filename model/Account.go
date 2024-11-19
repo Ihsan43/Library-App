@@ -10,6 +10,6 @@ type Account struct {
 	Password  string    `gorm:"size:255" json:"password,omitempty"` 
 	Role      string    `gorm:"size:50;not null" json:"role"`
 	CreatedAt time.Time `gorm:"default:current_timestamp" json:"createdAt"`
-	UpdatedAt time.Time `gorm:"default:current_timestamp;autoUpdateTime" json:"updatedAt"`
+	UpdatedAt time.Time `gorm:"default:null" json:"updatedAt"`
 }
 
