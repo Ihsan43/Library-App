@@ -10,6 +10,7 @@ import (
 func SendCreateResponse(ctx *gin.Context, description string, data any) {
 	ctx.JSON(http.StatusCreated, modelutil.SingleResponse{
 		Status: modelutil.Status{
+			Status:      true,
 			Code:        http.StatusCreated,
 			Description: description,
 		},
@@ -20,6 +21,7 @@ func SendCreateResponse(ctx *gin.Context, description string, data any) {
 func SendSingleResponse(ctx *gin.Context, description string, data any) {
 	ctx.JSON(http.StatusOK, modelutil.SingleResponse{
 		Status: modelutil.Status{
+			Status:      true,
 			Code:        http.StatusOK,
 			Description: description,
 		},
@@ -30,6 +32,7 @@ func SendSingleResponse(ctx *gin.Context, description string, data any) {
 func SendErrorResponse(ctx *gin.Context, code int, description string) {
 	ctx.JSON(code, modelutil.SingleResponse{
 		Status: modelutil.Status{
+			Status:      false,
 			Code:        code,
 			Description: description,
 		},
@@ -39,6 +42,7 @@ func SendErrorResponse(ctx *gin.Context, code int, description string) {
 func SendPagedResponse(ctx *gin.Context, description string, data []any, paging any) {
 	ctx.JSON(http.StatusOK, modelutil.PagedResponse{
 		Status: modelutil.Status{
+			Status:      true,
 			Code:        http.StatusOK,
 			Description: description,
 		},

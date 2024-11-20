@@ -29,7 +29,7 @@ func SetupRouter(router *gin.Engine) error {
 	authRoutes := router.Group("/auth")
 	{
 		authRoutes.POST("/register", authController.Create)
-		// authRoutes.POST("/login", authController.Login)
+		authRoutes.POST("/login", authController.Login)
 	}
 
 	return router.Run()

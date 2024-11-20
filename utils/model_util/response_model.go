@@ -1,6 +1,7 @@
 package modelutil
 
 type Status struct {
+	Status      bool   `json:"status"`
 	Code        int    `json:"code"`
 	Description string `json:"description"`
 }
