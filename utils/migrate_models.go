@@ -8,7 +8,7 @@ import (
 )
 
 var mainModels = []interface{}{
-	&model.Account{},
+	&model.User{},
 }
 
 func MigrateModels(db *gorm.DB) {

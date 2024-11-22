@@ -26,10 +26,14 @@ func SetupRouter(router *gin.Engine) error {
 
 	authController := controller.NewAuthController(sv.AuthService())
 
-	authRoutes := router.Group("/auth")
+	v1 := router.Group("/api/v1")
+
+	library := v1.Group("/library")
+
+	authRoutes:= library.Group("/auth")
 	{
-		authRoutes.POST("/register", authController.Create)
-		authRoutes.POST("/login", authController.Login)
+		authRoutes.POST("/register", authController.CreateUser)
+		authRoutes.POST("/login", authController.LoginUser)
 	}
 
 	return router.Run()

@@ -20,15 +20,15 @@ func NewAuthController(auhtUc service.AuthService) *AuthController {
 	}
 }
 
-func (c *AuthController) Create(ctx *gin.Context) {
-	var account model.Account
+func (c *AuthController) CreateUser(ctx *gin.Context) {
+	var user model.User
 
-	if err := ctx.ShouldBindJSON(&account); err != nil {
+	if err := ctx.ShouldBindJSON(&user); err != nil {
 		common.SendErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	newRes, err := c.auhtUc.RegisterAccount(account)
+	newRes, err := c.auhtUc.Register(user)
 	if err != nil {
 		common.SendErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
@@ -37,19 +37,19 @@ func (c *AuthController) Create(ctx *gin.Context) {
 	common.SendCreateResponse(ctx, "Succesfully Created Account", newRes)
 }
 
-func (c *AuthController) Login(ctx *gin.Context) {
-	var payload dto.AuthRequestDto
+func (c *AuthController) LoginUser(ctx *gin.Context) {
 
+	var payload dto.AuthRequestDto
 	if err := ctx.ShouldBindJSON(&payload); err != nil {
 		common.SendErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	account, err := c.auhtUc.Login(payload.Username, payload.Password)
+	token, err := c.auhtUc.Login(payload.Username, payload.Password)
 	if err != nil {
 		common.SendErrorResponse(ctx, http.StatusUnauthorized, err.Error())
 		return
 	}
 
-	common.SendSingleResponse(ctx, "Succesfully Login", account.Username)
+	common.SendSingleResponse(ctx, "Successfully Login", token)
 }

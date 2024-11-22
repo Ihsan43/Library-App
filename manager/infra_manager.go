@@ -41,7 +41,6 @@ func (i *infraManager) openConn() error {
 	return nil
 }
 
-// Conn mengembalikan koneksi Gorm DB
 func (i *infraManager) Conn() *gorm.DB {
 	return i.db
 }

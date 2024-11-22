@@ -6,5 +6,4 @@ type JwtTokenClaims struct {
 	jwt.RegisteredClaims
 	UserId   string   `json:"userId"`
 	Role     string   `json:"role"`
-	Services []string `json:"services"`
 }
