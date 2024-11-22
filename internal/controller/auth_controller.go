@@ -20,14 +20,14 @@ func NewAuthController(auhtUc service.AuthService) *AuthController {
 }
 
 func (c *AuthController) Create(ctx *gin.Context) {
-	var account model.Account
+	var user model.User
 
-	if err := ctx.ShouldBindJSON(&account); err != nil {
+	if err := ctx.ShouldBindJSON(&user); err != nil {
 		common.SendErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	newRes,err := c.auhtUc.RegisterAccount(account)
+	newRes,err := c.auhtUc.RegisterUser(user)
 
 	if err != nil {
 		common.SendErrorResponse(ctx, http.StatusInternalServerError, err.Error())

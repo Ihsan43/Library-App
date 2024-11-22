@@ -2,7 +2,7 @@ package model
 
 import "time"
 
-type Account struct {
+type User struct {
 	ID        string    `gorm:"primary_key;type:uuid;" json:"id"`
 	Name      string    `gorm:"size:255;not null" json:"name"`
 	Email     string    `gorm:"unique;size:100;not null" json:"email"`

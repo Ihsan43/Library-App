@@ -8,26 +8,26 @@ import (
 )
 
 type AuthService interface {
-	RegisterAccount(payload model.Account) (model.Account, error)
+	RegisterUser(payload model.User) (model.User, error)
 }
 
-type accountSevi struct {
-	AccountService
+type userSevi struct {
+	UserService
 }
 
 // RegisterAccount implements AuthService.
-func (s *accountSevi) RegisterAccount(payload model.Account) (model.Account, error) {
+func (s *userSevi) RegisterUser(payload model.User) (model.User, error) {
 
 	hashPassword, err := utils.HashPassword(payload.Password)
 	if err != nil {
-		return model.Account{}, err
+		return model.User{}, err
 	}
 
 	if payload.Role != "admin" && payload.Role != "user" && payload.Role != "employee" {
-		return model.Account{}, errors.New("Invalid Role")
+		return model.User{}, errors.New("Invalid Role")
 	}
 
-	payload = model.Account{
+	payload = model.User{
 		Password:  hashPassword,
 		CreatedAt: time.Now(),
 	}
@@ -35,8 +35,8 @@ func (s *accountSevi) RegisterAccount(payload model.Account) (model.Account, err
 	return payload, nil
 }
 
-func NewAuthService(accountService AccountService) AuthService {
-	return &accountSevi{
-		AccountService: accountService,
+func NewAuthService(userService UserService) AuthService {
+	return &userSevi{
+		UserService: userService,
 	}
 }

@@ -3,7 +3,7 @@ package manager
 import "library_app/internal/repository"
 
 type RepoManager interface {
-	AccountRepo() repository.AccountRepository
+	UserRepo() repository.UserRepository
 }
 
 type repoManager struct {
@@ -11,8 +11,8 @@ type repoManager struct {
 }
 
 // UserRepo implements RepoManager.
-func (r *repoManager) AccountRepo() repository.AccountRepository {
-	return repository.NewAccountRepository(r.infra.Conn())
+func (r *repoManager) UserRepo() repository.UserRepository {
+	return repository.NewUserRepository(r.infra.Conn())
 }
 
 func NewRepoManager(infra InfraManager) RepoManager {
