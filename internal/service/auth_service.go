@@ -15,7 +15,7 @@ type AuthService interface {
 }
 
 type userServi struct {
-	us UserService
+	us          UserService
 }
 
 // Login implements AuthService.

@@ -3,6 +3,7 @@ package routes
 import (
 	"library_app/config"
 	"library_app/internal/controller"
+	"library_app/internal/middleware"
 	"library_app/manager"
 	"log"
 
@@ -26,14 +27,25 @@ func SetupRouter(router *gin.Engine) error {
 
 	authController := controller.NewAuthController(sv.AuthService())
 
+	userController := controller.NewUSerController(sv.UserService())
+
 	v1 := router.Group("/api/v1")
 
 	library := v1.Group("/library")
 
-	authRoutes:= library.Group("/auth")
+	authRoutes := library.Group("/auth")
 	{
 		authRoutes.POST("/register", authController.CreateUser)
 		authRoutes.POST("/login", authController.LoginUser)
+	}
+
+	user := library.Group("", middleware.AuthMiddleware(), middleware.ValidationMiddleware())
+
+	{
+		user.GET("/user/:id", userController.GetUserId)
+		user.PUT("/user/:id", userController.UpdatedUserById)
+		user.GET("/users", userController.GetUsersWithPagination)
+		user.DELETE("/user/:id", userController.DeleteUserID)
 	}
 
 	return router.Run()

@@ -2,6 +2,7 @@ package security
 
 import (
 	"errors"
+	"fmt"
 	"library_app/config"
 	"library_app/model"
 	"library_app/model/dto"
@@ -54,4 +55,38 @@ func CreateAccessToken(user *model.User) (dto.AuthResponseDto, error) {
 	return dto.AuthResponseDto{
 		Token: newToken,
 	}, nil
+}
+
+func VerifyToken(tokenString string) (jwt.MapClaims, error) {
+	cfg, err := config.NewConfig()
+	if err != nil {
+		log.Fatalf("Failed to load config: %v", err)
+	}
+
+	// Parse token
+	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
+		// Verifikasi metode signing
+		if method, ok := t.Method.(*jwt.SigningMethodHMAC); !ok || method.Alg() != cfg.JwtSigningMethod.Name {
+			return nil, fmt.Errorf("Invalid token signing method")
+		}
+		// Kembalikan kunci signature
+		return []byte(cfg.JwtSignatureKey), nil
+	})
+
+	if err != nil {
+		return nil, fmt.Errorf("Invalid parse token: %s", err.Error())
+	}
+
+	// Verifikasi klaim
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
+		return nil, fmt.Errorf("Invalid token: claims verification failed")
+	}
+
+	// Verifikasi issuer (iss)
+	if claims["iss"] != cfg.ApplicationName {
+		return nil, fmt.Errorf("Invalid token: issuer mismatch")
+	}
+
+	return claims, nil
 }

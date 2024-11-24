@@ -1,6 +1,8 @@
 package manager
 
-import "library_app/internal/service"
+import (
+	"library_app/internal/service"
+)
 
 type ServiceManager interface {
 	UserService() service.UserService

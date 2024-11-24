@@ -31,6 +31,22 @@ type TokenConfig struct {
 	AccessTokenLifeTime time.Duration
 }
 
+type MailData struct {
+	Username string
+	Code	 string
+}
+
+type MailType int
+
+type Mail struct {
+	From string
+	To []string
+	Subject string
+	Body string
+	MType MailType	
+	Data *MailData 
+}
+
 type Config struct {
 	ApiConfig
 	DbConfig

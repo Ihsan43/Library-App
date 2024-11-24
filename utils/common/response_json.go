@@ -50,3 +50,4 @@ func SendPagedResponse(ctx *gin.Context, description string, data []any, paging 
 		Paging: paging,
 	})
 }
+
