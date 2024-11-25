@@ -36,7 +36,7 @@ func (s *userService) FindUsers(page int, limit int) ([]model.User, int64, error
 
 func (s *userService) UpdatedUser(id string, payload dto.UserDto) (model.User, error) {
 
-	user, err := s.userRepo.Get(id)
+	user, err := s.userRepo.GetUser(id)
 	if err != nil {
 		return model.User{}, errors.New("user not found")
 	}
@@ -48,7 +48,7 @@ func (s *userService) UpdatedUser(id string, payload dto.UserDto) (model.User, e
 		AvatarURL:   payload.AvatarURL,
 	}
 
-	newUser, err := s.userRepo.Update(id, user)
+	newUser, err := s.userRepo.UpdateUser(id, user)
 	if err != nil {
 		return model.User{}, errors.New(err.Error())
 	}
@@ -57,7 +57,7 @@ func (s *userService) UpdatedUser(id string, payload dto.UserDto) (model.User, e
 }
 
 func (s *userService) FindUserById(id string) (model.User, error) {
-	return s.userRepo.Get(id)
+	return s.userRepo.GetUser(id)
 }
 
 // FindUsername implements AccountService.
@@ -81,7 +81,7 @@ func (s *userService) CheckEmailOrUsername(email string, username string) (bool,
 
 // CreateAccount implements AccountService.
 func (s *userService) CreateUser(payload model.User) (model.User, error) {
-	return s.userRepo.Create(payload)
+	return s.userRepo.CreateUser(payload)
 }
 
 func NewAccountService(userRepo repository.UserRepository) UserService {

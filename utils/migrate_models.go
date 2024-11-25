@@ -9,6 +9,7 @@ import (
 
 var mainModels = []interface{}{
 	&model.User{},
+	&model.Book{},
 }
 
 func MigrateModels(db *gorm.DB) {

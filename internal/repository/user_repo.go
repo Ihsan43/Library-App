@@ -9,11 +9,11 @@ import (
 )
 
 type UserRepository interface {
-	Create(payload model.User) (model.User, error)
-	Get(id string) (model.User, error)
+	CreateUser(payload model.User) (model.User, error)
+	GetUser(id string) (model.User, error)
 	GetByUsername(username string) (model.User, error)
 	GetUsers(paginator *common.Paginator) ([]model.User, int64, error)
-	Update(id string, payload model.User) (model.User, error)
+	UpdateUser(id string, payload model.User) (model.User, error)
 	IsEmailOrUsernameExist(email, username string) (bool, error)
 	DeleteUser(id string) (model.User, error)
 }
@@ -47,7 +47,7 @@ func (a *userRepository) IsEmailOrUsernameExist(email string, username string) (
 	return count > 0, nil
 }
 
-func (a *userRepository) Create(payload model.User) (model.User, error) {
+func (a *userRepository) CreateUser(payload model.User) (model.User, error) {
 	payload.ID = utils.GenerateUuid()
 
 	if err := a.db.Create(&payload).Error; err != nil {
@@ -57,7 +57,7 @@ func (a *userRepository) Create(payload model.User) (model.User, error) {
 	return payload, nil
 }
 
-func (a *userRepository) Get(id string) (model.User, error) {
+func (a *userRepository) GetUser(id string) (model.User, error) {
 	var user model.User
 	if err := a.db.First(&user, "id = ?", id).Error; err != nil {
 		return model.User{}, err
@@ -85,7 +85,7 @@ func (a *userRepository) GetUsers(paginator *common.Paginator) ([]model.User, in
 	return users, total, err
 }
 
-func (a *userRepository) Update(id string, payload model.User) (model.User, error) {
+func (a *userRepository) UpdateUser(id string, payload model.User) (model.User, error) {
 	var user model.User
 	if err := a.db.First(&user, "id = ?", id).Error; err != nil {
 		return model.User{}, err
