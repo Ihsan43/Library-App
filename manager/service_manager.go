@@ -7,10 +7,16 @@ import (
 type ServiceManager interface {
 	UserService() service.UserService
 	AuthService() service.AuthService
+	BookService() service.BookService
 }
 
 type serviceManager struct {
 	repo RepoManager
+}
+
+// BookService implements ServiceManager.
+func (s *serviceManager) BookService() service.BookService {
+	return service.NewBookService(s.repo.BookRepo())
 }
 
 // AccountService implements ServiceManager.

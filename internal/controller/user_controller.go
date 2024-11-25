@@ -1,11 +1,11 @@
 package controller
 
 import (
+	"fmt"
 	"library_app/internal/service"
 	"library_app/model/dto"
 	"library_app/utils/common"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -48,19 +48,10 @@ func (c *userController) UpdatedUserById(ctx *gin.Context) {
 
 func (c *userController) GetUsersWithPagination(ctx *gin.Context) {
 	// Mengambil query parameter page dan limit dari URL
-	pageStr := ctx.DefaultQuery("page", "1")
-	limitStr := ctx.DefaultQuery("limit", "10")
 
-	// Convert string ke integer
-	page, err := strconv.Atoi(pageStr)
+	page, limit, err := common.GetLimitAndPage(ctx)
 	if err != nil {
-		common.SendErrorResponse(ctx, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	limit, err := strconv.Atoi(limitStr)
-	if err != nil {
-		common.SendErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		common.SendErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -104,5 +95,5 @@ func (c *userController) DeleteUserID(ctx *gin.Context) {
 		return
 	}
 
-	common.SendSingleResponse(ctx, "Successfully delete user", res)
+	common.SendSingleResponse(ctx, "Successfully delete user", fmt.Sprintf("Account user with id : %s is delete", res.ID))
 }

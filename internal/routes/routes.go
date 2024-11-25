@@ -48,5 +48,16 @@ func SetupRouter(router *gin.Engine) error {
 		user.DELETE("/user/:id", userController.DeleteUserID)
 	}
 
+	bookController := controller.NewBookController(sv.BookService())
+
+	book := library.Group("", middleware.AuthMiddleware())
+
+	{
+		book.POST("/book", bookController.CreateBook)
+		book.GET("/book/:id", bookController.GetBook)
+		book.GET("/books", bookController.GetBooksWithPagination)
+		book.DELETE("/book/:id", bookController.DeleteBook)
+	}
+
 	return router.Run()
 }
