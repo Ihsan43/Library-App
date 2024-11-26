@@ -5,10 +5,16 @@ import "library_app/internal/repository"
 type RepoManager interface {
 	UserRepo() repository.UserRepository
 	BookRepo() repository.BookRepository
+	AddressRepo() repository.AddressRepository
 }
 
 type repoManager struct {
 	infra InfraManager
+}
+
+// AddressRepo implements RepoManager.
+func (r *repoManager) AddressRepo() repository.AddressRepository {
+	return repository.NewAddressRepository(r.infra.Conn())
 }
 
 // BookRepo implements RepoManager.

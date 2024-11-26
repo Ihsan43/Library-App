@@ -44,7 +44,6 @@ func (s *userService) UpdatedUser(id string, payload dto.UserDto) (model.User, e
 	user = model.User{
 		Name:        payload.Name,
 		Username:    payload.Username,
-		PhoneNumber: payload.PhoneNumber,
 		AvatarURL:   payload.AvatarURL,
 	}
 

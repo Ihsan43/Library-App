@@ -8,10 +8,16 @@ type ServiceManager interface {
 	UserService() service.UserService
 	AuthService() service.AuthService
 	BookService() service.BookService
+	AddressService() service.AddressService
 }
 
 type serviceManager struct {
 	repo RepoManager
+}
+
+// AddressService implements ServiceManager.
+func (s *serviceManager) AddressService() service.AddressService {
+	return service.NewAddressRepository(s.repo.AddressRepo())
 }
 
 // BookService implements ServiceManager.

@@ -10,7 +10,7 @@ import (
 var mainModels = []interface{}{
 	&model.User{},
 	&model.Book{},
-	// &model.Address{},
+	&model.Address{},
 	// &model.Orders{},
 }
 

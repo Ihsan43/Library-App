@@ -59,5 +59,16 @@ func SetupRouter(router *gin.Engine) error {
 		book.DELETE("/book/:id", bookController.DeleteBook)
 	}
 
+	addressController := controller.NewAddressController(sv.AddressService())
+
+	address := library.Group("", middleware.AuthMiddleware(), middleware.AuthMiddleware())
+
+	{
+		address.POST("/address", addressController.CreateAddress)
+		address.PUT("/address/:id", addressController.UpdateAddress)
+		address.GET("/address/:id", addressController.GetAddress)
+		address.DELETE("/address/:id", addressController.DeleteAddress)
+	}
+
 	return router.Run()
 }
