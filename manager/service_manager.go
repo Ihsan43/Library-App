@@ -9,10 +9,28 @@ type ServiceManager interface {
 	AuthService() service.AuthService
 	BookService() service.BookService
 	AddressService() service.AddressService
+	OrderService() service.OrderService
+	PaymentService() service.PaymentService
+	TransactionService() service.TransactionService
 }
 
 type serviceManager struct {
 	repo RepoManager
+}
+
+// TransactionService implements ServiceManager.
+func (s *serviceManager) TransactionService() service.TransactionService {
+	return service.NewTransactionService(s.repo.TransactionRepo())
+}
+
+// PaymentService implements ServiceManager.
+func (s *serviceManager) PaymentService() service.PaymentService {
+	return service.NewPaymentService(s.repo.PaymentRepo())
+}
+
+// OrderService implements ServiceManager.
+func (s *serviceManager) OrderService() service.OrderService {
+	return service.NewOrderService(s.repo.OrderRepo())
 }
 
 // AddressService implements ServiceManager.

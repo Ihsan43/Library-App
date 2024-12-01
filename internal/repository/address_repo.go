@@ -37,7 +37,7 @@ func (r *addressRepository) GetAddress(id string) (model.Address, error) {
 
 	var address model.Address
 
-	if err := r.db.Preload("User").First(&address, "id = ?", id).Error; err != nil {
+	if err := r.db.Preload("User").First(&address, "user_id = ?", id).Error; err != nil {
 		return model.Address{}, err
 	}
 

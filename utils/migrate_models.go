@@ -11,7 +11,9 @@ var mainModels = []interface{}{
 	&model.User{},
 	&model.Book{},
 	&model.Address{},
-	// &model.Orders{},
+	&model.Orders{},
+	&model.Payment{},
+	&model.TransactionHistory{},
 }
 
 func MigrateModels(db *gorm.DB) {

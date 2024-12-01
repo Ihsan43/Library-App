@@ -5,7 +5,7 @@ import "time"
 type Address struct {
 	ID          string    `gorm:"primary_key;type:uuid;" json:"id"`
 	UserID      string    `gorm:"type:uuid;not null" json:"user_id"`
-	User        User      `gorm:"foreignKey:UserID;references:ID" json:"user"`
+	User        *User      `gorm:"foreignKey:UserID;references:ID" json:"user"`
 	PhoneNumber string    `gorm:"size:255;not null" json:"phone_number"`
 	Street      string    `gorm:"size:255;not null" json:"street"`
 	City        string    `gorm:"size:255;not null" json:"city"`
