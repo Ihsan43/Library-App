@@ -12,11 +12,26 @@ type BookRepository interface {
 	CreateBook(payload model.Book) (model.Book, error)
 	GetBook(id string) (model.Book, error)
 	Gebooks(paginator *common.Paginator) ([]model.Book, int64, error)
+	UpdateBook(id string, payload model.Book) (model.Book, error)
 	DeleteBook(id string) (model.Book, error)
 }
 
 type bookRepository struct {
 	db gorm.DB
+}
+
+// UpdateBook implements BookRepository.
+func (r *bookRepository) UpdateBook(id string, payload model.Book) (model.Book, error) {
+	var book model.Book
+	if err := r.db.First(&book, "id = ?", id).Error; err != nil {
+		return model.Book{}, err
+	}
+
+	if err := r.db.Model(&book).Updates(payload).Error; err != nil {
+		return model.Book{}, err
+	}
+
+	return book, nil
 }
 
 // DeleteBook implements BookRepository.
@@ -34,10 +49,8 @@ func (r *bookRepository) Gebooks(paginator *common.Paginator) ([]model.Book, int
 	var books []model.Book
 	var total int64
 
-	// Hitung total item
 	r.db.Model(&model.Book{}).Count(&total)
 
-	// Terapkan pagination dan ambil data
 	err := paginator.ApplyPagination(&r.db).Find(&books).Error
 	return books, total, err
 }
