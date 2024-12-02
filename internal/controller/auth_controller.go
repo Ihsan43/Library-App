@@ -2,7 +2,6 @@ package controller
 
 import (
 	"library_app/internal/service"
-	"library_app/model"
 	"library_app/model/dto"
 	"library_app/utils/common"
 	"net/http"
@@ -21,14 +20,14 @@ func NewAuthController(auhtUc service.AuthService) *AuthController {
 }
 
 func (c *AuthController) CreateUser(ctx *gin.Context) {
-	var user model.User
+	var payload dto.UserRequestDto
 
-	if err := ctx.ShouldBindJSON(&user); err != nil {
+	if err := ctx.ShouldBindJSON(&payload); err != nil {
 		common.SendErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	newRes, err := c.auhtUc.Register(user)
+	newRes, err := c.auhtUc.Register(payload)
 	if err != nil {
 		common.SendErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
