@@ -13,9 +13,9 @@ type UserService interface {
 	CreateUser(payload model.User) (model.User, error)
 	CheckEmailOrUsername(email, username string) (bool, error)
 	FindByUsernamePassword(username string, password string) (model.User, error)
-	FindUserById(id string) (model.User, error)
-	UpdatedUser(id string, ppayload dto.UserDto) (model.User, error)
-	FindUsers(page, limit int) ([]model.User, int64, error)
+	FindUserById(id string) (dto.UserResponseDto, error) 
+	UpdatedUser(id string, payload dto.UserRequestDto) (dto.UserResponseDto, error)
+	FindUsers(page int, limit int) ([]dto.UserResponseDto, int64, error)
 	DeleteUserById(id string) (model.User, error)
 }
 
@@ -29,16 +29,28 @@ func (s *userService) DeleteUserById(id string) (model.User, error) {
 }
 
 // FindUsers implements UserService.
-func (s *userService) FindUsers(page int, limit int) ([]model.User, int64, error) {
+func (s *userService) FindUsers(page int, limit int) ([]dto.UserResponseDto, int64, error) {
 	paginator := common.NewPaginator(page, limit)
-	return s.userRepo.GetUsers(paginator)
+	users, total, err := s.userRepo.GetUsers(paginator)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// Gunakan helper untuk konversi
+	var userDtos []dto.UserResponseDto
+	for _, user := range users {
+		userDtos = append(userDtos, dto.NewUserResponseDto(user))
+	}
+
+	return userDtos, total, nil
 }
 
-func (s *userService) UpdatedUser(id string, payload dto.UserDto) (model.User, error) {
+
+func (s *userService) UpdatedUser(id string, payload dto.UserRequestDto) (dto.UserResponseDto, error) {
 
 	user, err := s.userRepo.GetUser(id)
 	if err != nil {
-		return model.User{}, errors.New("user not found")
+		return dto.UserResponseDto{}, errors.New("user not found")
 	}
 
 	user = model.User{
@@ -49,14 +61,21 @@ func (s *userService) UpdatedUser(id string, payload dto.UserDto) (model.User, e
 
 	newUser, err := s.userRepo.UpdateUser(id, user)
 	if err != nil {
-		return model.User{}, errors.New(err.Error())
+		return dto.UserResponseDto{}, errors.New(err.Error())
 	}
-
-	return newUser, nil
+	
+	return dto.NewUserResponseDto(newUser), nil
 }
 
-func (s *userService) FindUserById(id string) (model.User, error) {
-	return s.userRepo.GetUser(id)
+func (s *userService) FindUserById(id string) (dto.UserResponseDto, error) {
+	
+	user, err := s.userRepo.GetUser(id)
+	if err != nil {
+		return dto.UserResponseDto{}, errors.New("user not found")
+	} 
+
+	return dto.NewUserResponseDto(user), nil
+
 }
 
 // FindUsername implements AccountService.

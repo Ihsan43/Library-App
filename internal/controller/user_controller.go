@@ -33,7 +33,12 @@ func (c *userController) GetUserId(ctx *gin.Context) {
 }
 
 func (c *userController) UpdatedUserById(ctx *gin.Context) {
-	var payload dto.UserDto
+	var payload dto.UserRequestDto
+
+	if err := ctx.ShouldBindJSON(&payload); err != nil {
+		common.SendErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
 
 	userId := ctx.Param("id")
 
@@ -89,11 +94,11 @@ func (c *userController) DeleteUserID(ctx *gin.Context) {
 		return
 	}
 
-	res, err := c.userService.DeleteUserById(userId)
+	user, err := c.userService.DeleteUserById(userId)
 	if err != nil {
 		common.SendErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	common.SendSingleResponse(ctx, "Successfully delete user", fmt.Sprintf("Account user with id : %s is delete", res.ID))
+	common.SendSingleResponse(ctx, "Successfully delete user", fmt.Sprintf("User with ID %s has been deleted", user.ID))
 }

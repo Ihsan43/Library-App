@@ -10,12 +10,12 @@ import (
 )
 
 type AuthService interface {
-	Register(payload model.User) (model.User, error)
+	Register(payload dto.UserRequestDto) (dto.UserResponseDto, error)
 	Login(username, password string) (dto.AuthResponseDto, error)
 }
 
 type userServi struct {
-	us          UserService
+	us UserService
 }
 
 // Login implements AuthService.
@@ -35,34 +35,45 @@ func (s *userServi) Login(username string, password string) (dto.AuthResponseDto
 }
 
 // RegisterAccount implements AuthService.
-func (s *userServi) Register(payload model.User) (model.User, error) {
+func (s *userServi) Register(payload dto.UserRequestDto) (dto.UserResponseDto, error) {
 
 	exist, err := s.us.CheckEmailOrUsername(payload.Email, payload.Username)
 	if err != nil {
-		return model.User{}, err
+		return dto.UserResponseDto{}, err
 	}
 
 	if exist {
-		return model.User{}, errors.New("username or email already exists")
+		return dto.UserResponseDto{}, errors.New("username or email already exists")
+	}
+
+	if payload.Email == "" && payload.PhoneNumber == "" && payload.Username == "" && payload.Password == "" {
+		return dto.UserResponseDto{}, err
 	}
 
 	hashPassword, err := utils.HashPassword(payload.Password)
 	if err != nil {
-		return model.User{}, fmt.Errorf("failed to hash password: %w", err)
+		return dto.UserResponseDto{}, fmt.Errorf("failed to hash password: %w", err)
 	}
 
 	if payload.Role != "admin" && payload.Role != "user" && payload.Role != "employee" {
-		return model.User{}, errors.New("Invalid Role")
+		return dto.UserResponseDto{}, errors.New("Invalid Role")
 	}
 
-	payload.Password = hashPassword
+	user := model.User{
+		Name:        payload.Name,
+		Email:       payload.Email,
+		PhoneNumber: payload.PhoneNumber,
+		Username:    payload.Username,
+		Password:    hashPassword,
+		Role:        payload.Role,
+	}
 
-	account, err := s.us.CreateUser(payload)
+	newUser, err := s.us.CreateUser(user)
 	if err != nil {
-		return model.User{}, fmt.Errorf("failed to create account: %w", err)
+		return dto.UserResponseDto{}, fmt.Errorf("failed to create account: %w", err)
 	}
 
-	return account, nil
+	return dto.NewUserResponseDto(newUser), nil
 }
 
 func NewAuthService(userService UserService) AuthService {
