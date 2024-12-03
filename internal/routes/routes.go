@@ -65,6 +65,7 @@ func SetupRouter(router *gin.Engine) error {
 		book.POST("/book", bookController.CreateBook)
 		book.GET("/book/:id", bookController.GetBook)
 		book.GET("/books", bookController.GetBooksWithPagination)
+		book.PUT("/book/:id", bookController.UpdatedBookById)
 		book.DELETE("/book/:id", bookController.DeleteBook)
 	}
 
