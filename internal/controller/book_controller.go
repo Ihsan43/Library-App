@@ -3,7 +3,7 @@ package controller
 import (
 	"fmt"
 	"library_app/internal/service"
-	"library_app/model"
+	"library_app/model/dto"
 	"library_app/utils/common"
 	"library_app/utils/validation"
 	"net/http"
@@ -22,7 +22,7 @@ func NewBookController(bookService service.BookService) *bookController {
 }
 
 func (c *bookController) CreateBook(ctx *gin.Context) {
-	var payload model.Book
+	var payload dto.BookRequestDto
 
 	if err := validation.ValidatRoleAdmin(ctx); err != nil {
 		common.SendErrorResponse(ctx, http.StatusInternalServerError, err.Error())
@@ -85,6 +85,30 @@ func (c *bookController) GetBooksWithPagination(ctx *gin.Context) {
 
 	common.SendPagedResponse(ctx, "Success", newBooks, paging)
 
+}
+
+func (c *bookController) UpdatedBookById(ctx *gin.Context) {
+	var payload dto.BookRequestDto
+
+	if err := validation.ValidatRoleAdmin(ctx); err != nil {
+		common.SendErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if err := ctx.ShouldBindJSON(&payload); err != nil {
+		common.SendErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	userID := ctx.Param("id")
+
+	bookRes,err := c.bookService.UpdateBookById(userID, payload)
+	if err != nil {
+		common.SendErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	common.SendSingleResponse(ctx, "Succesfully Update Book", bookRes)
 }
 
 func (c *bookController) DeleteBook(ctx *gin.Context) {

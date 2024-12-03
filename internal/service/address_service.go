@@ -7,14 +7,37 @@ import (
 )
 
 type AddressService interface {
-	CreateAddress(address model.Address) (model.Address, error)
-	UpdateAddress(id string, payload dto.AddressDto) (dto.AddressDto, error)
-	GetAddress(id string) (model.Address, error)
+	CreateAddress(payload dto.AddressRequestDto) (dto.AddressResponseDto, error)
+	UpdateAddress(id string, payload dto.AddressRequestDto) (dto.AddressResponseDto, error)
+	FindAddressByUserId(userId string) (model.Address, error)
+	GetAddress(id string) (dto.AddressResponseDto, error)
 	DeleteAddrees(id string) error
+	FindAddresses(userId string) ([]dto.AddressResponseDto, error)
 }
 
 type addressService struct {
 	addressRepo repository.AddressRepository
+}
+
+// FindAddresses implements AddressService.
+func (s *addressService) FindAddresses(userId string) ([]dto.AddressResponseDto, error) {
+
+	addresses, err := s.addressRepo.FindAddresses(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	var addressDtos []dto.AddressResponseDto
+	for _, address := range addresses {
+		addressDtos = append(addressDtos, dto.NewAddressResponseDto(address))
+	}
+
+	return addressDtos, nil
+}
+
+// FindAddressByUserId implements AddressService.
+func (s *addressService) FindAddressByUserId(userId string) (model.Address, error) {
+	return s.addressRepo.FindAddressByUserId(userId)
 }
 
 // DeleteAddrees implements AddressService.
@@ -23,39 +46,55 @@ func (s *addressService) DeleteAddrees(id string) error {
 }
 
 // GetAddress implements AddressService.
-func (s *addressService) GetAddress(id string) (model.Address, error) {
+func (s *addressService) GetAddress(id string) (dto.AddressResponseDto, error) {
 
 	address, err := s.addressRepo.GetAddress(id)
 	if err != nil {
-		return model.Address{}, err
+		return dto.AddressResponseDto{}, err
 	}
 
-	return address, nil
+	return dto.NewAddressResponseDto(address), nil
 }
 
 // UpdateAddress implements AddressService.
-func (s *addressService) UpdateAddress(id string, payload dto.AddressDto) (dto.AddressDto, error) {
+func (s *addressService) UpdateAddress(id string, payload dto.AddressRequestDto) (dto.AddressResponseDto, error) {
 
-	address, err := s.addressRepo.UpdateAddress(id, payload)
+	address := model.Address{
+		PhoneNumber: payload.PhoneNumber,
+		Street:      payload.Street,
+		City:        payload.City,
+		PostalCode:  payload.PostalCode,
+		State:       payload.State,
+		Country:     payload.Country,
+	}
+
+	newAddress, err := s.addressRepo.UpdateAddress(id, address)
 	if err != nil {
-		return dto.AddressDto{}, err
+		return dto.AddressResponseDto{}, err
 	}
 
-	payload = dto.AddressDto{
-		PhoneNumber: address.PhoneNumber,
-		Street:      address.Street,
-		PostalCode:  address.PostalCode,
-		City:        address.City,
-		Country:     address.Country,
-		State:       address.State,
-	}
-
-	return payload, nil
+	return dto.NewAddressResponseDto(newAddress), nil
 }
 
 // CreateAddress implements AddressService.
-func (s *addressService) CreateAddress(address model.Address) (model.Address, error) {
-	return s.addressRepo.CreateAddress(address)
+func (s *addressService) CreateAddress(payload dto.AddressRequestDto) (dto.AddressResponseDto, error) {
+
+	address := model.Address{
+		PhoneNumber: payload.PhoneNumber,
+		Street:      payload.Street,
+		City:        payload.City,
+		UserID:      payload.UserId,
+		PostalCode:  payload.PostalCode,
+		State:       payload.State,
+		Country:     payload.Country,
+	}
+
+	newAddress, err := s.addressRepo.CreateAddress(address)
+	if err != nil {
+		return dto.AddressResponseDto{}, err
+	}
+
+	return dto.NewAddressResponseDto(newAddress), nil
 }
 
 func NewAddressRepository(addressRepo repository.AddressRepository) AddressService {

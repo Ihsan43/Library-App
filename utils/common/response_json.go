@@ -51,3 +51,13 @@ func SendPagedResponse(ctx *gin.Context, description string, data []any, paging 
 	})
 }
 
+func SendMultipleResponse(ctx *gin.Context, description string, data []any) {
+	ctx.JSON(http.StatusOK, modelutil.SingleResponse{
+		Status: modelutil.Status{
+			Status:      true,
+			Code:        http.StatusOK,
+			Description: description,
+		},
+		Data: data,
+	})
+}

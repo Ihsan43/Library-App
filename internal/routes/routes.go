@@ -56,6 +56,7 @@ func SetupRouter(router *gin.Engine) error {
 		book.POST("/book", bookController.CreateBook)
 		book.GET("/book/:id", bookController.GetBook)
 		book.GET("/books", bookController.GetBooksWithPagination)
+		book.PUT("/book/:id", bookController.UpdatedBookById)
 		book.DELETE("/book/:id", bookController.DeleteBook)
 	}
 
@@ -67,6 +68,7 @@ func SetupRouter(router *gin.Engine) error {
 		address.POST("/address", addressController.CreateAddress)
 		address.PUT("/address/:id", addressController.UpdateAddress)
 		address.GET("/address/:id", addressController.GetAddress)
+		address.GET("/addresses", addressController.GetAddresses)
 		address.DELETE("/address/:id", addressController.DeleteAddress)
 	}
 

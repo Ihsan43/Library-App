@@ -77,10 +77,8 @@ func (a *userRepository) GetUsers(paginator *common.Paginator) ([]model.User, in
 	var users []model.User
 	var total int64
 
-	// Hitung total item
 	a.db.Model(&model.User{}).Count(&total)
 
-	// Terapkan pagination dan ambil data
 	err := paginator.ApplyPagination(a.db).Find(&users).Error
 	return users, total, err
 }

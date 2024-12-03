@@ -21,9 +21,6 @@ type UserResponseDto struct {
 	Email       string    `json:"email"`
 	PhoneNumber string    `json:"phone_number"`
 	Username    string    `json:"username"`
-	Role        string    `json:"role"`
-	IsVerified  bool      `json:"is_verified"`
-	Status      string    `json:"status"`
 	AvatarURL   string    `json:"avatar_url"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
@@ -36,9 +33,6 @@ func NewUserResponseDto(user model.User) UserResponseDto {
 		Email:       user.Email,
 		PhoneNumber: user.PhoneNumber,
 		Username:    user.Username,
-		Role:        user.Role,
-		IsVerified:  user.IsVerified,
-		Status:      user.Status,
 		AvatarURL:   user.AvatarURL,
 		CreatedAt:   user.CreatedAt,
 		UpdatedAt:   user.UpdatedAt,
